@@ -1,0 +1,42 @@
+name: CI/CD with artifacts v4
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: my-artifact
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run build (exemplo)
+        run: |
+          mkdir -p dist
+          echo "conteúdo" > dist/app.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-artifact
+          path: dist
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: my-artifact
+          path: restored
+
+      - name: Show restored files
+        run: ls -la restored
