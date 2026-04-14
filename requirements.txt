@@ -1,0 +1,4 @@
+requests
+git add requirements.txt
+git commit -m "Adicionando dependência requests"
+git push origin dev
