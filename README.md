@@ -1,3 +1,4 @@
 # meu-projeto-devops
 ## Meu Projeto DevOps
 Este projeto consome uma API de piadas usando Python.
+Testando alertas do GitHub Actions!
