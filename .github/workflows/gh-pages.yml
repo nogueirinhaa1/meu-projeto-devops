@@ -1,3 +1,4 @@
+cat > .github/workflows/gh-pages.yml <<'YAML'
 name: Deploy to GitHub Pages
 on:
   push:
@@ -10,15 +11,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Prepare site
         run: |
           mkdir -p site
-          # copia o index.html para a pasta que será publicada
           cp index.html site/ || true
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
+YAML
