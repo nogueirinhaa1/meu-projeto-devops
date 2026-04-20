@@ -22,3 +22,5 @@ jobs:
         run: |
           pytest -q
 YAML
+
+ci: add Python CI workflow
