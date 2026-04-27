@@ -28,18 +28,23 @@ jobs:
           pytest -q
 
   deploy:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     needs: test
-    env:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-      SSH_PORT: ${{ secrets.SSH_PORT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH (real)
+      - name: Prepare SSH key (only if provided)
+        run: |
+          if [ -n "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/deploy_key
+            chmod 600 /tmp/deploy_key
+          else
+            echo "No SSH key provided; skipping real deploy steps."
+          fi
+
+      - name: Deploy via SSH using appleboy (only when key exists)
         if: ${{ secrets.SSH_PRIVATE_KEY != '' }}
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -49,7 +54,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "Iniciando deploy real"
-            # comandos reais de deploy aqui
 
       - name: Deploy fallback (simulate success)
         if: ${{ secrets.SSH_PRIVATE_KEY == '' }}
